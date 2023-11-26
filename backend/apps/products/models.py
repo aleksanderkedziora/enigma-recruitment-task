@@ -3,6 +3,14 @@ from django.utils.translation import gettext_lazy as _
 
 from decimal import Decimal
 
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+import sys
+
+from django.conf import settings
+
 
 class VatRate(models.IntegerChoices):
     STANDARD = 23, _('23% - Standard rate')
@@ -13,6 +21,9 @@ class VatRate(models.IntegerChoices):
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=120, verbose_name=_('name'))
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -54,4 +65,42 @@ class Product(models.Model):
 
     @property
     def price_brutto(self):
-        return self.price_netto * Decimal(1 + (self.vat_rate / 100))
+        return round(self.price_netto * (1 + Decimal(str(self.vat_rate / 100))), 2)
+
+    @property
+    def short_description(self) -> str:
+        return f"{self.name} - {self.price_brutto} PLN"
+
+    def _set_thumbnail(self) -> None:
+        img = Image.open(self.image)
+        img_name = self.image.name.split('.')[0]
+
+        output_thumb = BytesIO()
+        output_size = (img.width, img.height)
+
+        if img.width > settings.MAX_THUMBNAIL_WIDTH:
+            height_width_ratio = img.size[1] / img.size[0]
+            thumbnail_height = int(settings.MAX_THUMBNAIL_WIDTH * height_width_ratio)
+            output_size = (settings.MAX_THUMBNAIL_WIDTH, thumbnail_height)
+
+        img.thumbnail(output_size)
+        img.save(output_thumb, format='JPEG', quality=90)
+
+        self.thumbnail = InMemoryUploadedFile(
+            output_thumb,
+            'ImageField',
+            f"{img_name}_thumb.jpg",
+            'image/jpeg',
+            sys.getsizeof(output_thumb),
+            None
+        )
+
+    def save(self, *args, **kwargs):
+        self._set_thumbnail()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.short_description
+
+    def __repr__(self):
+        return self.short_description

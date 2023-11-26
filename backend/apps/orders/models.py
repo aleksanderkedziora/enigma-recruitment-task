@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.orders.manager import OrderManager
+
 
 class Address(models.Model):
     street = models.CharField(max_length=100)
@@ -8,7 +10,7 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=10)
     city = models.CharField(max_length=30)
 
-    address = models.OneToOneField('orders.Order', on_delete=models.CASCADE)
+    order = models.OneToOneField('orders.Order', on_delete=models.CASCADE)
 
 
 class Order(models.Model):
@@ -18,6 +20,8 @@ class Order(models.Model):
 
     client = models.ForeignKey('accounts.CustomUser', on_delete=models.PROTECT, related_name='orders')
     product_list = models.ManyToManyField('products.Product', through='orders.ProductOrderList')
+
+    objects = OrderManager()
 
 
 class ProductOrderList(models.Model):
