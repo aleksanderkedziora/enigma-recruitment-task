@@ -32,3 +32,30 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
         return self.create_user(email, password, **extra_fields)
+
+    @staticmethod
+    def update_user(*, instance, password=None, **extra_fields):
+        """
+        Create and save a user with the given email and password.
+        """
+        save = False
+
+        if password is None:
+            password = extra_fields.pop('password', None)
+
+        if password:
+            instance.set_password(password)
+            save = True
+
+        first_name = extra_fields.pop('first_name', None)
+        last_name = extra_fields.pop('last_name', None)
+
+        if first_name is not None and last_name is not None:
+            instance.first_name = first_name
+            instance.last_name = last_name
+            save = True
+
+        if save:
+            instance.save()
+
+        return instance

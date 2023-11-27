@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from apps.orders.manager import OrderManager
@@ -14,7 +16,7 @@ class Address(models.Model):
 
 
 class Order(models.Model):
-    order_datetime = models.DateTimeField(auto_now_add=True, editable=False)
+    order_datetime = models.DateTimeField(editable=False)
     payment_date = models.DateField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
@@ -22,6 +24,11 @@ class Order(models.Model):
     product_list = models.ManyToManyField('products.Product', through='orders.ProductOrderList')
 
     objects = OrderManager()
+
+    def save(self, *args, **kwargs):
+        self.order_datetime = datetime.datetime.now()
+        self.payment_date = self.order_datetime.date() + datetime.timedelta(days=5)
+        super().save(*args, **kwargs)
 
 
 class ProductOrderList(models.Model):

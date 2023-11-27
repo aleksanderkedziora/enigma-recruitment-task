@@ -7,3 +7,13 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class ProductInOrderWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
+    quantity = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'quantity']
+
