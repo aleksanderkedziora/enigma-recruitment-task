@@ -1,22 +1,13 @@
+import sys
+from io import BytesIO
+
+from PIL import Image
+from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from decimal import Decimal
-
-from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-
-import sys
-
-from django.conf import settings
-
-
-class VatRate(models.IntegerChoices):
-    STANDARD = 23, _('23% - Standard rate')
-    REDUCED_8 = 8, _('8% - Reduced rate')
-    REDUCED_5 = 5, _('5% - Reduced rate')
-    ZERO = 0, _('0% - Zero rate')
+from apps.products.query import ProductQuerySet
 
 
 class ProductCategory(models.Model):
@@ -35,15 +26,10 @@ class Product(models.Model):
         max_length=250,
         verbose_name=_('description')
     )
-    price_netto = models.DecimalField(
+    price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
-        verbose_name=_('netto')
-    )
-    vat_rate = models.IntegerField(
-        choices=VatRate.choices,
-        default=VatRate.STANDARD,
-        verbose_name=_('vat rate')
+        verbose_name=_('price')
     )
     image = models.ImageField(
         upload_to="products/%Y/%m/%d/",
@@ -63,13 +49,11 @@ class Product(models.Model):
         null=True
     )
 
-    @property
-    def price_brutto(self):
-        return round(self.price_netto * (1 + Decimal(str(self.vat_rate / 100))), 2)
+    objects = ProductQuerySet.as_manager()
 
     @property
     def short_description(self) -> str:
-        return f"{self.name} - {self.price_brutto} PLN"
+        return f"{self.name} - {self.price} PLN"
 
     def _set_thumbnail(self) -> None:
         img = Image.open(self.image)

@@ -16,7 +16,7 @@ class Address(models.Model):
 
 
 class Order(models.Model):
-    order_datetime = models.DateTimeField(editable=False)
+    order_date = models.DateField(editable=False, auto_now_add=True)
     payment_date = models.DateField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
