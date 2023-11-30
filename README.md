@@ -40,11 +40,11 @@ chyba, że maszyna operuje na jądrze linuxa, wówczas krok ten można pominąć
 3. **Alternatywne uruchomienie aplikacji:**
 
     Twórca niniejszej aplikacji nie zaleca opisywanego tu sposobu uruchomienia aplikcji, gdyż w zależności od systemu,
-    proces ten będzie się różnić.
+proces ten będzie się różnić.
 
-    - W niniejszym podejściu zalecane jest uruchomienie aplikcaji w IDE.
-    - Wymagane jest posiadanie zainstalowanego Redisa na maszynie, na której będzie uruchomiona aplikacja.
-    - Należy uruchomić wirtualne środowisko, a następnie zainstlować wymagane biblioteki za pomocą komendy:
+- W niniejszym podejściu zalecane jest uruchomienie aplikcaji w IDE.
+- Wymagane jest posiadanie zainstalowanego Redisa na maszynie, na której będzie uruchomiona aplikacja.
+- Należy uruchomić wirtualne środowisko, a następnie zainstlować wymagane biblioteki za pomocą komendy:
     ```bash
     pip install -r requirements.txt
     ```
