@@ -6,7 +6,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.generics import ListAPIView
 
@@ -15,8 +15,20 @@ from apps.products.permission import IsStaffPermission
 from apps.products.serializers import (
     ProductSerializer,
     ListProductSerializer,
-    StatisticProductSerializer
+    StatisticProductSerializer, ProductCategorySerializer
 )
+
+
+class ProductCategoryViewSet(mixins.ListModelMixin,
+                             mixins.CreateModelMixin,
+                             mixins.DestroyModelMixin,
+                             viewsets.GenericViewSet):
+    """Base viewset for manage and see product category attributes."""
+
+    queryset = ProductCategory.objects.all()
+    serializer_class = ProductCategorySerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsStaffPermission]
 
 
 @extend_schema_view(
@@ -34,7 +46,7 @@ from apps.products.serializers import (
             ),
             OpenApiParameter(
                 'category',
-                OpenApiTypes.INT, enum=list(ProductCategory.objects.values_list('id', flat=True)),
+                OpenApiTypes.INT,
                 description='Filter by category id.',
             ),
             OpenApiParameter(
