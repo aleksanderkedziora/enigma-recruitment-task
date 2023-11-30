@@ -16,7 +16,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(_("staff"), default=False)
     is_active = models.BooleanField(
         _("active"),
-        default=False,
+        default=True,
         help_text=_(
             "Designates whether this user should be treated as active. "
             "Unselect this instead of deleting accounts."
@@ -35,14 +35,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     @property
     def full_name(self):
         return self.first_name + ' ' + self.last_name
-
-    def activate(self):
-        self.is_active = True
-        self.save()
-
-    def deactivate(self):
-        self.is_active = False
-        self.save()
 
     def delete(self, *args, hard_delete=False, **kwargs):
         if not hard_delete:

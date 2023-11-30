@@ -20,7 +20,7 @@ class Order(models.Model):
     payment_date = models.DateField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
 
-    client = models.ForeignKey('accounts.CustomUser', on_delete=models.PROTECT, related_name='orders')
+    customer = models.ForeignKey('accounts.CustomUser', on_delete=models.PROTECT, related_name='orders')
     product_list = models.ManyToManyField('products.Product', through='orders.ProductOrderList')
 
     objects = OrderManager()

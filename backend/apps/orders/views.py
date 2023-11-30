@@ -15,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 class OrderViewSet(mixins.ListModelMixin,
                    mixins.CreateModelMixin,
                    viewsets.GenericViewSet):
+    """Base viewset for manage and see order attributes."""
+
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
     authentication_classes = [BasicAuthentication]

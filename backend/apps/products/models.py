@@ -51,8 +51,7 @@ class Product(models.Model):
 
     objects = ProductQuerySet.as_manager()
 
-    @property
-    def short_description(self) -> str:
+    def _get_short_description(self) -> str:
         return f"{self.name} - {self.price} PLN"
 
     def _set_thumbnail(self) -> None:
@@ -84,7 +83,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.short_description
+        return self._get_short_description()
 
     def __repr__(self):
-        return self.short_description
+        return self._get_short_description()

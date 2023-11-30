@@ -1,11 +1,12 @@
 from rest_framework import serializers
 
-from apps.accounts.serializers import UserSerializer, OrderUserSerializer
+from apps.accounts.serializers import OrderUserSerializer
 from apps.orders.models import Order, Address, ProductOrderList
 from apps.products.serializers import ProductInOrderWriteSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
+    """Serializer for the address object."""
     class Meta:
         model = Address
         fields = [
@@ -20,6 +21,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class ProductOrderListReadSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for the product order list object."""
     product = serializers.ReadOnlyField(source='product.id')
 
     class Meta:
@@ -31,7 +33,8 @@ class ProductOrderListReadSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class OrderListSerializer(serializers.ModelSerializer):
-    client = OrderUserSerializer()
+    """Serializer for the order objects to use in list views."""
+    customer = OrderUserSerializer()
     address = AddressSerializer()
 
     product_list = ProductOrderListReadSerializer(
@@ -45,7 +48,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'total_price',
-            'client',
+            'customer',
             'payment_date',
             'address',
             'product_list'
@@ -54,13 +57,14 @@ class OrderListSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'total_price',
-            'client',
+            'customer',
             'payment_date'
         ]
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
-    client = OrderUserSerializer(required=False)
+    """Serializer for the order objects to use in create views."""
+    customer = OrderUserSerializer(required=False)
     address = AddressSerializer()
 
     product_list = ProductInOrderWriteSerializer(many=True, write_only=True)
@@ -70,7 +74,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'total_price',
-            'client',
+            'customer',
             'payment_date',
             'address',
             'product_list'
@@ -79,7 +83,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'total_price',
-            'client',
+            'customer',
             'payment_date'
         ]
 

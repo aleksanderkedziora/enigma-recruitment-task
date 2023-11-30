@@ -3,5 +3,6 @@ from django.urls import path
 from apps.accounts import views
 
 urlpatterns = [
-    path('', views.CreateUserView.as_view()),
+    path('register/', views.RegisterView.as_view(), name='auth_register'),
+    path('change_password/', views.ChangePasswordView.as_view(), name='auth_change_password'),
 ]
