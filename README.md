@@ -44,26 +44,39 @@ proces ten będzie się różnić.
 
 - W niniejszym podejściu zalecane jest uruchomienie aplikcaji w IDE.
 - Wymagane jest posiadanie zainstalowanego Redisa na maszynie, na której będzie uruchomiona aplikacja.
-- Należy uruchomić wirtualne środowisko, a następnie zainstlować wymagane biblioteki za pomocą komendy:
-    ```bash
-    pip install -r requirements.txt
-    ```
+  - Należy uruchomić wirtualne środowisko, a następnie zainstlować wymagane biblioteki za pomocą komendy:
+      ```bash
+      pip install -r requirements.txt
+      ```
 
-    Następnie wykonać migracje:
+      Następnie wykonać migracje:
 
-    ```bash
-    python manage.py migrate
-    ```
-   lub
-   ```bash
-    python3 manage.py migrate
-    ```
-    dalej w celu utworzenia konta administracyjnego
+      ```bash
+      python manage.py migrate
+      ```
+     lub
+     ```bash
+      python3 manage.py migrate
+      ```
+      dalej w celu utworzenia konta administracyjnego
 
-   ```bash
-    python manage.py add_admin
-    ```
+     ```bash
+      python manage.py add_admin
+      ```
+  
+      serwer uruchamiamy za pomocą:
+
+      ```bash
+      python manage.py runserver 8000
+      ```
+  
+      należy również obsłużyć celery:
+ 
+      ```bash
+      celery -A config worker -l INFO
+      celery -A config  beat -l INFO
+      ```
     
-3. **Dokumentacja:**
+4. **Dokumentacja:**
  - Dokumentacja została wykonana przy pomocy biblioteki drf-spectacular (Swagger). Dokumentacja pozwala na 
 interaktywne przetestowanie wystawionych endpointów API.
